@@ -44,14 +44,17 @@
            COPY WS_Date.cpy REPLACING LEADING ==Prefix== BY ==WS==.
            01  WS-File-Status                              PIC 9(2).
            01  Report_Header.
-               05                                          PIC X(40) value spaces.
-               05                                          PIC X(15) value 'Purchase Report'.
+               05                                          PIC X(40)   value spaces.
+               05                                          PIC X(18)   value 'Purchase Report'.
                05  Report_Date.
                    10  Report_Month                        PIC 9(2).
                    10                                      PIC X(1)    value '/'.
                    10  Report_Day                          PIC 9(2).
                    10                                      PIC X(1)    value '/'.
                    10  Report_Year                         PIC 9(4).
+               05                                          PIC X(2)    value spaces.
+               05                                          PIC X(6)    value 'Page'.
+               05  Page_Counter                            PIC Z(2)    value zero.
            
            Local-Storage Section.
            
@@ -66,7 +69,7 @@
            MOVE WS_Current_Year TO Report_Year
            
 
-           INVOKE TYPE Debug::WriteLine(Report_Date).
+           INVOKE TYPE Debug::WriteLine(Report_Header).
            
       *    Stop "Press <CR> to End Program"
            Stop Run.
