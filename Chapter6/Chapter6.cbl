@@ -14,12 +14,12 @@
                File-Control.
                    Select PurchasesFile
                        assign to PurchasesData
-                       file status is WS-File-Status
+                       file status is File-Status
                        organization is line sequential.
                        
                    Select PurchasesReportFile
                        assign to PurchasesReport
-                       file status is WS-File-Status
+                       file status is File-Status
                        organization is line sequential.
                
                I-O-Control.
@@ -37,12 +37,18 @@
                        10  Purchase_Year                   PIC 9(4).
                    
            FD  PurchasesReportFile.
-               01  Report-Record.
+               01  Purchase-Report-Record.
                    05  Print-Buffer                        PIC X(250).
                    
            Working-Storage Section.
            COPY WS_Date.cpy REPLACING LEADING ==Prefix== BY ==WS==.
-           01  WS-File-Status                              PIC 9(2).
+           
+           01  Status-Indicators.
+               05  File-Status                             PIC 9(2).
+           01  Switches                                    PIC X(1).
+               88  No-More-Records                                     value 'N'.
+           01  Misc_Variables.
+               05  Page_Count                              PIC 9(2).
            01  Report_Header.
                05                                          PIC X(40)   value spaces.
                05                                          PIC X(18)   value 'Purchase Report'.
@@ -54,7 +60,7 @@
                    10  Report_Year                         PIC 9(4).
                05                                          PIC X(2)    value spaces.
                05                                          PIC X(6)    value 'Page'.
-               05  Page_Counter                            PIC Z(2)    value zero.
+               05  Report_Page_Count                       PIC Z(2)    value zero.
            
            Local-Storage Section.
            
@@ -63,15 +69,48 @@
            Report Section.
            
        Procedure Division.
-           MOVE FUNCTION CURRENT-DATE TO WS_Current_Date_Data
-           MOVE WS_Current_Month to Report_Month
-           MOVE WS_Current_Day TO Report_Day
-           MOVE WS_Current_Year TO Report_Year
            
-
-           INVOKE TYPE Debug::WriteLine(Report_Header).
+           100-Initialization.
+               OPEN INPUT PurchasesFile
+                   PERFORM 600-Validation
+               OPEN OUTPUT PurchasesReportFile
+                   PERFORM 600-Validation
+               
+               PERFORM 900-Date-Format.
+               PERFORM 200-Read-Records until No-More-Records
+               PERFORM 500-Close-Module
+               STOP "Press <CR> to continue"
+               STOP RUN.
+           
+           200-Read-Records.
+           
+               READ PurchasesFile
+                   AT END SET No-More-Records TO TRUE
+                       NOT at END
+                           PERFORM 400-Print-Records.
+           
+           300-Calculations.
+           
+           400-Print-Records.
+               ADD 1 TO Page_Count
+      *        WRITE Purchase-Report-Record FROM Report_Header
+               WRITE Purchase-Report-Record FROM Purchases-Record.
+           
+           500-Close-Module.
+               CLOSE PurchasesFile, PurchasesReportFile.
+               
+           600-Validation.
+               EVALUATE File-Status
+                   WHEN NOT EQUAL TO 00
+                       INVOKE TYPE Debug::WriteLine("File Not Found")
+                       STOP RUN
+               END-EVALUATE.
+           
+           900-Date-Format.
+               MOVE FUNCTION CURRENT-DATE TO WS_Current_Date_Data
+               MOVE WS_Current_Month to Report_Month
+               MOVE WS_Current_Day TO Report_Day
+               MOVE WS_Current_Year TO Report_Year
            
       *    Stop "Press <CR> to End Program"
-           Stop Run.
-           
        End Program.

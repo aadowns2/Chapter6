@@ -17,6 +17,7 @@
     <MaxError>100</MaxError>
     <SourceFormat>Variable</SourceFormat>
     <DefineConstants>DEBUG</DefineConstants>
+    <AdditionalDirectives>Assign(External)</AdditionalDirectives>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>.\bin\Release\</OutputPath>
@@ -39,7 +40,7 @@
     <Folder Include="App_Reports\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\CH0608.DAT" />
+    <None Include="AppData\CH0608.DAT" />
     <None Include="WS_Date.cpy" />
   </ItemGroup>
   <ItemGroup>
