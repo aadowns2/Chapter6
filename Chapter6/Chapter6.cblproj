@@ -39,6 +39,8 @@
   <ItemGroup>
     <None Include="AppData\CH0608.DAT" />
     <None Include="App_Reports\PurchasesReport.dat" />
+    <None Include="DetailLine.cpy" />
+    <None Include="ReportHeaders.cpy" />
     <None Include="WS_Date.cpy" />
   </ItemGroup>
   <ItemGroup>
