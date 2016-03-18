@@ -37,10 +37,8 @@
     <Compile Include="Chapter6.cbl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Reports\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="AppData\CH0608.DAT" />
+    <None Include="App_Reports\PurchasesReport.dat" />
     <None Include="WS_Date.cpy" />
   </ItemGroup>
   <ItemGroup>

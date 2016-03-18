@@ -77,6 +77,7 @@
                    PERFORM 600-Validation
                
                PERFORM 900-Date-Format.
+               WRITE Purchase-Report-Record FROM Report_Header
                PERFORM 200-Read-Records until No-More-Records
                PERFORM 500-Close-Module
                STOP "Press <CR> to continue"
@@ -93,8 +94,7 @@
            
            400-Print-Records.
                ADD 1 TO Page_Count
-      *        WRITE Purchase-Report-Record FROM Report_Header
-               WRITE Purchase-Report-Record FROM Purchases-Record.
+               WRITE Purchase-Report-Record FROM Purchases-Record AFTER ADVANCING 1 LINE.
            
            500-Close-Module.
                CLOSE PurchasesFile, PurchasesReportFile.
