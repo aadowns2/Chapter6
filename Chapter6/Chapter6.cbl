@@ -60,7 +60,7 @@
                    10  Report_Year                         PIC 9(4).
                05                                          PIC X(2)    value spaces.
                05                                          PIC X(6)    value 'Page'.
-               05  Report_Page_Count                       PIC Z(2)    value zero.
+               05  Report_Page_Count                       PIC 9(2)    value zero.
            
            Local-Storage Section.
            
@@ -76,15 +76,15 @@
                OPEN OUTPUT PurchasesReportFile
                    PERFORM 600-Validation
                
+               ADD 1 TO Page_Count.
                PERFORM 900-Date-Format.
-               WRITE Purchase-Report-Record FROM Report_Header
+               PERFORM 350-Print_Header
                PERFORM 200-Read-Records until No-More-Records
                PERFORM 500-Close-Module
                STOP "Press <CR> to continue"
                STOP RUN.
            
            200-Read-Records.
-           
                READ PurchasesFile
                    AT END SET No-More-Records TO TRUE
                        NOT at END
@@ -92,12 +92,17 @@
            
            300-Calculations.
            
+           350-Print_Header.
+               MOVE Page_Count TO Report_Page_Count
+                   WRITE Purchase-Report-Record FROM Report_Header AFTER ADVANCING 2 LINES.
+           
            400-Print-Records.
                ADD 1 TO Page_Count
                WRITE Purchase-Report-Record FROM Purchases-Record AFTER ADVANCING 1 LINE.
            
            500-Close-Module.
-               CLOSE PurchasesFile, PurchasesReportFile.
+               CLOSE PurchasesFile
+               CLOSE PurchasesReportFile.
                
            600-Validation.
                EVALUATE File-Status
@@ -112,5 +117,4 @@
                MOVE WS_Current_Day TO Report_Day
                MOVE WS_Current_Year TO Report_Year
            
-      *    Stop "Press <CR> to End Program"
        End Program.
